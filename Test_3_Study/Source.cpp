@@ -146,6 +146,70 @@ void reverse_it2(char* gk, int len){
 	}
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void reverse_it3(char* s, int l){
+	__asm{
+		xor ecx, ecx;
+		xor ebx, ebx;
+		xor eax, eax;
+		mov edi, s;
+		mov ebx, l;
+		shr ebx, 1;
+
+	Reverse_It_Loop:
+		mov ax, [edi + ecx * 2];
+		ror ax, 8;
+		mov[edi + ecx * 2], ax;
+		inc ecx;
+		cmp ecx, ebx;
+		jb Reverse_It_Loop;
+
+
+	}
+
+}
+
 int find_it(char* str, char* find, int len){
 	int found = -1;
 	__asm{
@@ -194,29 +258,57 @@ void copy_string_2(char* s, char* d, int l){
 	}
 }
 
+int func(char* d){
+	__asm{
+		xor ecx, ecx;
+		xor eax, eax;
+		mov edi, d;
+	String_Loop:
+		cmp[edi + ecx], 0x00;
+		je EXIT;
+		inc ecx;
+		jmp String_Loop;
+	EXIT:
+		mov eax, ecx;
+	}
+}
+
+void multi(){
+	__asm{
+		xor ecx, ecx;
+		mov cl, 0x08;
+		shl cl, 3;
+
+	}
+}
+
 int main(){
 	//decrement();
 	//maskoutbits();
 	//throwbits045();
 	//alter_esp();
 	//string_practice(5,'A','B');
-	twos_comp();
-	force_0_3_7_to_1();
-	divide_by_16_signed();
-	decrement2();
+	//twos_comp();
+	//force_0_3_7_to_1();
+	//divide_by_16_signed();
+	//decrement2();
 	int f; 
 	char s[] = "Hello World!";
 	char d[13];
 	//move_it(s,d,12);
 	char gk[] = { 0x74, 0x20, 0x43, 0x61, 0x20, 0x6D, 0x6F, 0x6E, 0x2E, 0x00, 0x61, 0x74};
-	char test = 'A';
+	char gk2[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x74, 0x68, 0x65, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00};	char test = 'A';
 	char *gptrK;
 	gptrK = &test;
 	//reverse_it(gk, 12, gptrK);
 	//reverse_it2(gk, 12);
+	//reverse_it3(gk2, 16);
 	//f = find_it(s, "W", 12);
 
 	//copy_string(s,d,13);
-	copy_string_2(s, d, 13);
+	//copy_string_2(s, d, 13);
+	multi();
+	char dat[] = { 0x11, 0x33, 0x44, 0xAA, 0x00 };
+	f = func(dat);
 	return 0;
 }
