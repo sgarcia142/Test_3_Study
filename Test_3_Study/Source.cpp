@@ -8,6 +8,42 @@ void decrement(){
 	return;
 }
 
+void twos_comp(){
+	__asm{
+		xor ebx, ebx;
+		mov ebx, 0xFFFFFFFF;
+		xor ebx, 0xFFFFFFFF;
+		inc ebx;
+	}
+}
+
+void decrement2(){
+
+	__asm {
+		mov eax, 0x5F0AC;
+		dec ah;
+	}
+
+	return;
+}
+
+void divide_by_16_signed(){
+	__asm{
+		xor ebx, ebx;
+		mov ebx, 0xC0;
+		sar ebx, 4;
+	}
+
+}
+
+void force_0_3_7_to_1(){
+	__asm {
+		xor eax, eax;
+		or ah, 0x89;
+	}
+}
+
+
 void maskoutbits(){
 
 	__asm {
@@ -164,6 +200,10 @@ int main(){
 	//throwbits045();
 	//alter_esp();
 	//string_practice(5,'A','B');
+	twos_comp();
+	force_0_3_7_to_1();
+	divide_by_16_signed();
+	decrement2();
 	int f; 
 	char s[] = "Hello World!";
 	char d[13];
