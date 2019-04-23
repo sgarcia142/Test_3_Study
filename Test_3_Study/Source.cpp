@@ -282,6 +282,27 @@ void multi(){
 	}
 }
 
+void interpret(){
+	char gk3[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00 };
+	char *gptrK;
+	gptrK = gk3;
+	__asm{
+		lea esi, gk3;
+		mov eax, dword ptr [gk3+4];
+		lea edi, gptrK;
+		xor ecx, ecx;
+		mov edx, [edi];
+		add ecx, 4;
+		mov bx, word ptr [gk3 + ecx * 2];
+		mov ah, byte ptr [gk3 + ecx * 2];
+		mov al, byte ptr [gk3 + ecx * 2 + 1];
+
+
+
+	}
+}
+
+
 int main(){
 	//decrement();
 	//maskoutbits();
@@ -297,9 +318,11 @@ int main(){
 	char d[13];
 	//move_it(s,d,12);
 	char gk[] = { 0x74, 0x20, 0x43, 0x61, 0x20, 0x6D, 0x6F, 0x6E, 0x2E, 0x00, 0x61, 0x74};
-	char gk2[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x74, 0x68, 0x65, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00};	char test = 'A';
-	char *gptrK;
-	gptrK = &test;
+	char gk2[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x74, 0x68, 0x65, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00};	
+	
+	char test = 'A';
+
+	//gptrK = &test;
 	//reverse_it(gk, 12, gptrK);
 	//reverse_it2(gk, 12);
 	//reverse_it3(gk2, 16);
@@ -307,8 +330,9 @@ int main(){
 
 	//copy_string(s,d,13);
 	//copy_string_2(s, d, 13);
-	multi();
+	//multi();
 	char dat[] = { 0x11, 0x33, 0x44, 0xAA, 0x00 };
-	f = func(dat);
+	//f = func(dat);
+	interpret();
 	return 0;
 }
