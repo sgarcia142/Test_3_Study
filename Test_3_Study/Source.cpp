@@ -117,6 +117,7 @@ void reverse_2_bytes(char *gK, int len){
 		inc ebx;
 		dec ecx;
 		jne Reverse_Loop;
+
 	}
 	return;
 }
@@ -241,10 +242,54 @@ void interpret(){
 	}
 	return;
 }
+/*
+int find_00(char *data){
+	__asm{
+		xor ecx, ecx;
+		mov esi, data;
+	Search_Loop:
+		mov al, [esi + ecx];
+		cmp al, 0x00;
+		je EXIT;
+		inc ecx;
+		jmp Search_Loop;
+	EXIT:
+		mov eax, ecx;
+	}
+	return;
+}
+*/
+
+
+int find_Y(char* gK, char Y){
+	__asm{
+		xor ecx, ecx;
+		xor eax, eax;
+		xor ebx, ebx;
+		mov esi, gK;
+		mov al, Y;
+	Search_Loop:
+		mov ah, [esi + ecx];
+		test ah, ah;
+		je Not_Found;
+		cmp ah, al;
+		je Found;
+		inc ecx;
+		jmp Search_Loop;
+	Not_Found:
+		mov eax, -1;
+		jmp EXIT;
+	Found:
+		mov eax, ecx;
+		jmp EXIT;
+	EXIT:
+	}
+	return;
+}
 
 
 int main(){
-	char dat[] = { 0x11, 0x33, 0x44, 0xAA, 0x00 };
+	char dat[] = { 0x11, 0x33, 0x44, 0xAA, 0x43, 0x00 };
 	char gk[] = { 0x74, 0x20, 0x43, 0x61, 0x20, 0x6D, 0x6F, 0x6E, 0x2E, 0x00, 0x61, 0x74 };
 	char gk2[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x74, 0x68, 0x65, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00 };
 	char gk3[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00 };
@@ -275,6 +320,8 @@ int main(){
 	//copy_string_2(s, d, 13);
 	//multi();
 	//f = func(dat);
+	//f = find_00(dat);
+	//f = find_Y(dat, 'C');
 	//interpret();
 	return 0;
 }

@@ -19,9 +19,6 @@ PUBLIC	?throwbits045@@YAXXZ				; throwbits045
 PUBLIC	?alter_esp@@YAXXZ				; alter_esp
 PUBLIC	?string_practice@@YAXHDD@Z			; string_practice
 PUBLIC	?move_it@@YAXPAD0H@Z				; move_it
-PUBLIC	?reverse_it@@YAXPADH0@Z				; reverse_it
-PUBLIC	?reverse_it2@@YAXPADH@Z				; reverse_it2
-PUBLIC	?reverse_it3@@YAXPADH@Z				; reverse_it3
 PUBLIC	?reverse_2_bytes@@YAXPADH@Z			; reverse_2_bytes
 PUBLIC	?reverse_4_bytes@@YAXPADH@Z			; reverse_4_bytes
 PUBLIC	?find_it@@YAHPAD0H@Z				; find_it
@@ -30,6 +27,7 @@ PUBLIC	?copy_string_2@@YAXPAD0H@Z			; copy_string_2
 PUBLIC	?func@@YAHPAD@Z					; func
 PUBLIC	?multi@@YAXXZ					; multi
 PUBLIC	?interpret@@YAXXZ				; interpret
+PUBLIC	?find_Y@@YAHPADD@Z				; find_Y
 PUBLIC	_main
 PUBLIC	??_C@_0N@GCDOMLDM@Hello?5World?$CB?$AA@		; `string'
 EXTRN	@_RTC_CheckStackVars@8:PROC
@@ -54,16 +52,16 @@ CONST	ENDS
 ; File v:\school files\cs3843\vsprojects\test_3_study\test_3_study\source.cpp
 ;	COMDAT _main
 _TEXT	SEGMENT
-_dat$ = -152						; size = 5
-_test$ = -133						; size = 1
-_gk3$ = -124						; size = 12
-_gk2$ = -104						; size = 16
-_gk$ = -80						; size = 12
-_s$ = -36						; size = 13
+_s$ = -128						; size = 13
+_test$ = -89						; size = 1
+_gk3$ = -80						; size = 12
+_gk2$ = -60						; size = 16
+_gk$ = -36						; size = 12
+_dat$ = -16						; size = 6
 __$ArrayPad$ = -4					; size = 4
 _main	PROC						; COMDAT
 
-; 368  : int main(){
+; 328  : int main(){
 
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
@@ -81,196 +79,304 @@ _main	PROC						; COMDAT
   00023	33 c5		 xor	 eax, ebp
   00025	89 45 fc	 mov	 DWORD PTR __$ArrayPad$[ebp], eax
 
-; 369  : 	//decrement();
-; 370  : 	//maskoutbits();
-; 371  : 	//throwbits045();
-; 372  : 	//alter_esp();
-; 373  : 	//string_practice(5,'A','B');
-; 374  : 	//twos_comp();
-; 375  : 	//force_0_3_7_to_1();
-; 376  : 	//divide_by_16_signed();
-; 377  : 	//decrement2();
-; 378  : 	int f; 
-; 379  : 	char s[] = "Hello World!";
+; 329  : 	char dat[] = { 0x11, 0x33, 0x44, 0xAA, 0x43, 0x00 };
 
-  00028	a1 00 00 00 00	 mov	 eax, DWORD PTR ??_C@_0N@GCDOMLDM@Hello?5World?$CB?$AA@
-  0002d	89 45 dc	 mov	 DWORD PTR _s$[ebp], eax
-  00030	8b 0d 04 00 00
+  00028	c6 45 f0 11	 mov	 BYTE PTR _dat$[ebp], 17	; 00000011H
+  0002c	c6 45 f1 33	 mov	 BYTE PTR _dat$[ebp+1], 51 ; 00000033H
+  00030	c6 45 f2 44	 mov	 BYTE PTR _dat$[ebp+2], 68 ; 00000044H
+  00034	c6 45 f3 aa	 mov	 BYTE PTR _dat$[ebp+3], -86 ; ffffffaaH
+  00038	c6 45 f4 43	 mov	 BYTE PTR _dat$[ebp+4], 67 ; 00000043H
+  0003c	c6 45 f5 00	 mov	 BYTE PTR _dat$[ebp+5], 0
+
+; 330  : 	char gk[] = { 0x74, 0x20, 0x43, 0x61, 0x20, 0x6D, 0x6F, 0x6E, 0x2E, 0x00, 0x61, 0x74 };
+
+  00040	c6 45 dc 74	 mov	 BYTE PTR _gk$[ebp], 116	; 00000074H
+  00044	c6 45 dd 20	 mov	 BYTE PTR _gk$[ebp+1], 32 ; 00000020H
+  00048	c6 45 de 43	 mov	 BYTE PTR _gk$[ebp+2], 67 ; 00000043H
+  0004c	c6 45 df 61	 mov	 BYTE PTR _gk$[ebp+3], 97 ; 00000061H
+  00050	c6 45 e0 20	 mov	 BYTE PTR _gk$[ebp+4], 32 ; 00000020H
+  00054	c6 45 e1 6d	 mov	 BYTE PTR _gk$[ebp+5], 109 ; 0000006dH
+  00058	c6 45 e2 6f	 mov	 BYTE PTR _gk$[ebp+6], 111 ; 0000006fH
+  0005c	c6 45 e3 6e	 mov	 BYTE PTR _gk$[ebp+7], 110 ; 0000006eH
+  00060	c6 45 e4 2e	 mov	 BYTE PTR _gk$[ebp+8], 46 ; 0000002eH
+  00064	c6 45 e5 00	 mov	 BYTE PTR _gk$[ebp+9], 0
+  00068	c6 45 e6 61	 mov	 BYTE PTR _gk$[ebp+10], 97 ; 00000061H
+  0006c	c6 45 e7 74	 mov	 BYTE PTR _gk$[ebp+11], 116 ; 00000074H
+
+; 331  : 	char gk2[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x74, 0x68, 0x65, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00 };
+
+  00070	c6 45 c4 43	 mov	 BYTE PTR _gk2$[ebp], 67	; 00000043H
+  00074	c6 45 c5 61	 mov	 BYTE PTR _gk2$[ebp+1], 97 ; 00000061H
+  00078	c6 45 c6 74	 mov	 BYTE PTR _gk2$[ebp+2], 116 ; 00000074H
+  0007c	c6 45 c7 20	 mov	 BYTE PTR _gk2$[ebp+3], 32 ; 00000020H
+  00080	c6 45 c8 6f	 mov	 BYTE PTR _gk2$[ebp+4], 111 ; 0000006fH
+  00084	c6 45 c9 6e	 mov	 BYTE PTR _gk2$[ebp+5], 110 ; 0000006eH
+  00088	c6 45 ca 20	 mov	 BYTE PTR _gk2$[ebp+6], 32 ; 00000020H
+  0008c	c6 45 cb 74	 mov	 BYTE PTR _gk2$[ebp+7], 116 ; 00000074H
+  00090	c6 45 cc 68	 mov	 BYTE PTR _gk2$[ebp+8], 104 ; 00000068H
+  00094	c6 45 cd 65	 mov	 BYTE PTR _gk2$[ebp+9], 101 ; 00000065H
+  00098	c6 45 ce 20	 mov	 BYTE PTR _gk2$[ebp+10], 32 ; 00000020H
+  0009c	c6 45 cf 6d	 mov	 BYTE PTR _gk2$[ebp+11], 109 ; 0000006dH
+  000a0	c6 45 d0 61	 mov	 BYTE PTR _gk2$[ebp+12], 97 ; 00000061H
+  000a4	c6 45 d1 74	 mov	 BYTE PTR _gk2$[ebp+13], 116 ; 00000074H
+  000a8	c6 45 d2 2e	 mov	 BYTE PTR _gk2$[ebp+14], 46 ; 0000002eH
+  000ac	c6 45 d3 00	 mov	 BYTE PTR _gk2$[ebp+15], 0
+
+; 332  : 	char gk3[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00 };
+
+  000b0	c6 45 b0 43	 mov	 BYTE PTR _gk3$[ebp], 67	; 00000043H
+  000b4	c6 45 b1 61	 mov	 BYTE PTR _gk3$[ebp+1], 97 ; 00000061H
+  000b8	c6 45 b2 74	 mov	 BYTE PTR _gk3$[ebp+2], 116 ; 00000074H
+  000bc	c6 45 b3 20	 mov	 BYTE PTR _gk3$[ebp+3], 32 ; 00000020H
+  000c0	c6 45 b4 6f	 mov	 BYTE PTR _gk3$[ebp+4], 111 ; 0000006fH
+  000c4	c6 45 b5 6e	 mov	 BYTE PTR _gk3$[ebp+5], 110 ; 0000006eH
+  000c8	c6 45 b6 20	 mov	 BYTE PTR _gk3$[ebp+6], 32 ; 00000020H
+  000cc	c6 45 b7 6d	 mov	 BYTE PTR _gk3$[ebp+7], 109 ; 0000006dH
+  000d0	c6 45 b8 61	 mov	 BYTE PTR _gk3$[ebp+8], 97 ; 00000061H
+  000d4	c6 45 b9 74	 mov	 BYTE PTR _gk3$[ebp+9], 116 ; 00000074H
+  000d8	c6 45 ba 2e	 mov	 BYTE PTR _gk3$[ebp+10], 46 ; 0000002eH
+  000dc	c6 45 bb 00	 mov	 BYTE PTR _gk3$[ebp+11], 0
+
+; 333  : 	char test = 'A';
+
+  000e0	c6 45 a7 41	 mov	 BYTE PTR _test$[ebp], 65 ; 00000041H
+
+; 334  : 	int f;
+; 335  : 	char s[] = "Hello World!";
+
+  000e4	a1 00 00 00 00	 mov	 eax, DWORD PTR ??_C@_0N@GCDOMLDM@Hello?5World?$CB?$AA@
+  000e9	89 45 80	 mov	 DWORD PTR _s$[ebp], eax
+  000ec	8b 0d 04 00 00
 	00		 mov	 ecx, DWORD PTR ??_C@_0N@GCDOMLDM@Hello?5World?$CB?$AA@+4
-  00036	89 4d e0	 mov	 DWORD PTR _s$[ebp+4], ecx
-  00039	8b 15 08 00 00
+  000f2	89 4d 84	 mov	 DWORD PTR _s$[ebp+4], ecx
+  000f5	8b 15 08 00 00
 	00		 mov	 edx, DWORD PTR ??_C@_0N@GCDOMLDM@Hello?5World?$CB?$AA@+8
-  0003f	89 55 e4	 mov	 DWORD PTR _s$[ebp+8], edx
-  00042	a0 0c 00 00 00	 mov	 al, BYTE PTR ??_C@_0N@GCDOMLDM@Hello?5World?$CB?$AA@+12
-  00047	88 45 e8	 mov	 BYTE PTR _s$[ebp+12], al
+  000fb	89 55 88	 mov	 DWORD PTR _s$[ebp+8], edx
+  000fe	a0 0c 00 00 00	 mov	 al, BYTE PTR ??_C@_0N@GCDOMLDM@Hello?5World?$CB?$AA@+12
+  00103	88 45 8c	 mov	 BYTE PTR _s$[ebp+12], al
 
-; 380  : 	char d[13];
-; 381  : 	//move_it(s,d,12);
-; 382  : 	char gk[] = { 0x74, 0x20, 0x43, 0x61, 0x20, 0x6D, 0x6F, 0x6E, 0x2E, 0x00, 0x61, 0x74};
+; 336  : 	char d[13];
+; 337  : 
+; 338  : 
+; 339  : 	//decrement();
+; 340  : 	//maskoutbits();
+; 341  : 	//throwbits045();
+; 342  : 	//alter_esp();
+; 343  : 	//string_practice(5,'A','B');
+; 344  : 	//twos_comp();
+; 345  : 	//force_0_3_7_to_1();
+; 346  : 	//divide_by_16_signed();
+; 347  : 	//decrement2();
+; 348  : 	//move_it(s,d,12);
+; 349  : 
+; 350  : 	//gptrK = &test;
+; 351  : 
+; 352  : 	//reverse_4_bytes(gk3, 12);
+; 353  : 	reverse_2_bytes(gk2, 16);
 
-  0004a	c6 45 b0 74	 mov	 BYTE PTR _gk$[ebp], 116	; 00000074H
-  0004e	c6 45 b1 20	 mov	 BYTE PTR _gk$[ebp+1], 32 ; 00000020H
-  00052	c6 45 b2 43	 mov	 BYTE PTR _gk$[ebp+2], 67 ; 00000043H
-  00056	c6 45 b3 61	 mov	 BYTE PTR _gk$[ebp+3], 97 ; 00000061H
-  0005a	c6 45 b4 20	 mov	 BYTE PTR _gk$[ebp+4], 32 ; 00000020H
-  0005e	c6 45 b5 6d	 mov	 BYTE PTR _gk$[ebp+5], 109 ; 0000006dH
-  00062	c6 45 b6 6f	 mov	 BYTE PTR _gk$[ebp+6], 111 ; 0000006fH
-  00066	c6 45 b7 6e	 mov	 BYTE PTR _gk$[ebp+7], 110 ; 0000006eH
-  0006a	c6 45 b8 2e	 mov	 BYTE PTR _gk$[ebp+8], 46 ; 0000002eH
-  0006e	c6 45 b9 00	 mov	 BYTE PTR _gk$[ebp+9], 0
-  00072	c6 45 ba 61	 mov	 BYTE PTR _gk$[ebp+10], 97 ; 00000061H
-  00076	c6 45 bb 74	 mov	 BYTE PTR _gk$[ebp+11], 116 ; 00000074H
+  00106	6a 10		 push	 16			; 00000010H
+  00108	8d 45 c4	 lea	 eax, DWORD PTR _gk2$[ebp]
+  0010b	50		 push	 eax
+  0010c	e8 00 00 00 00	 call	 ?reverse_2_bytes@@YAXPADH@Z ; reverse_2_bytes
+  00111	83 c4 08	 add	 esp, 8
 
-; 383  : 	char gk2[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x74, 0x68, 0x65, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00};	
+; 354  : 	//f = find_it(s, "W", 12);
+; 355  : 
+; 356  : 	//copy_string(s,d,13);
+; 357  : 	//copy_string_2(s, d, 13);
+; 358  : 	//multi();
+; 359  : 	//f = func(dat);
+; 360  : 	//f = find_00(dat);
+; 361  : 	//f = find_Y(dat, 'C');
+; 362  : 	//interpret();
+; 363  : 	return 0;
 
-  0007a	c6 45 98 43	 mov	 BYTE PTR _gk2$[ebp], 67	; 00000043H
-  0007e	c6 45 99 61	 mov	 BYTE PTR _gk2$[ebp+1], 97 ; 00000061H
-  00082	c6 45 9a 74	 mov	 BYTE PTR _gk2$[ebp+2], 116 ; 00000074H
-  00086	c6 45 9b 20	 mov	 BYTE PTR _gk2$[ebp+3], 32 ; 00000020H
-  0008a	c6 45 9c 6f	 mov	 BYTE PTR _gk2$[ebp+4], 111 ; 0000006fH
-  0008e	c6 45 9d 6e	 mov	 BYTE PTR _gk2$[ebp+5], 110 ; 0000006eH
-  00092	c6 45 9e 20	 mov	 BYTE PTR _gk2$[ebp+6], 32 ; 00000020H
-  00096	c6 45 9f 74	 mov	 BYTE PTR _gk2$[ebp+7], 116 ; 00000074H
-  0009a	c6 45 a0 68	 mov	 BYTE PTR _gk2$[ebp+8], 104 ; 00000068H
-  0009e	c6 45 a1 65	 mov	 BYTE PTR _gk2$[ebp+9], 101 ; 00000065H
-  000a2	c6 45 a2 20	 mov	 BYTE PTR _gk2$[ebp+10], 32 ; 00000020H
-  000a6	c6 45 a3 6d	 mov	 BYTE PTR _gk2$[ebp+11], 109 ; 0000006dH
-  000aa	c6 45 a4 61	 mov	 BYTE PTR _gk2$[ebp+12], 97 ; 00000061H
-  000ae	c6 45 a5 74	 mov	 BYTE PTR _gk2$[ebp+13], 116 ; 00000074H
-  000b2	c6 45 a6 2e	 mov	 BYTE PTR _gk2$[ebp+14], 46 ; 0000002eH
-  000b6	c6 45 a7 00	 mov	 BYTE PTR _gk2$[ebp+15], 0
+  00114	33 c0		 xor	 eax, eax
 
-; 384  : 	char gk3[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00 };
+; 364  : }
 
-  000ba	c6 45 84 43	 mov	 BYTE PTR _gk3$[ebp], 67	; 00000043H
-  000be	c6 45 85 61	 mov	 BYTE PTR _gk3$[ebp+1], 97 ; 00000061H
-  000c2	c6 45 86 74	 mov	 BYTE PTR _gk3$[ebp+2], 116 ; 00000074H
-  000c6	c6 45 87 20	 mov	 BYTE PTR _gk3$[ebp+3], 32 ; 00000020H
-  000ca	c6 45 88 6f	 mov	 BYTE PTR _gk3$[ebp+4], 111 ; 0000006fH
-  000ce	c6 45 89 6e	 mov	 BYTE PTR _gk3$[ebp+5], 110 ; 0000006eH
-  000d2	c6 45 8a 20	 mov	 BYTE PTR _gk3$[ebp+6], 32 ; 00000020H
-  000d6	c6 45 8b 6d	 mov	 BYTE PTR _gk3$[ebp+7], 109 ; 0000006dH
-  000da	c6 45 8c 61	 mov	 BYTE PTR _gk3$[ebp+8], 97 ; 00000061H
-  000de	c6 45 8d 74	 mov	 BYTE PTR _gk3$[ebp+9], 116 ; 00000074H
-  000e2	c6 45 8e 2e	 mov	 BYTE PTR _gk3$[ebp+10], 46 ; 0000002eH
-  000e6	c6 45 8f 00	 mov	 BYTE PTR _gk3$[ebp+11], 0
-
-; 385  : 	
-; 386  : 	char test = 'A';
-
-  000ea	c6 85 7b ff ff
-	ff 41		 mov	 BYTE PTR _test$[ebp], 65 ; 00000041H
-
-; 387  : 
-; 388  : 	//gptrK = &test;
-; 389  : 	//reverse_it(gk, 12, gptrK);
-; 390  : 	//reverse_it2(gk, 12);
-; 391  : 	//reverse_it3(gk2, 16);
-; 392  : 	//reverse_4_bytes(gk3, 12);
-; 393  : 	reverse_2_bytes(gk2, 16);
-
-  000f1	6a 10		 push	 16			; 00000010H
-  000f3	8d 45 98	 lea	 eax, DWORD PTR _gk2$[ebp]
-  000f6	50		 push	 eax
-  000f7	e8 00 00 00 00	 call	 ?reverse_2_bytes@@YAXPADH@Z ; reverse_2_bytes
-  000fc	83 c4 08	 add	 esp, 8
-
-; 394  : 	//f = find_it(s, "W", 12);
-; 395  : 
-; 396  : 	//copy_string(s,d,13);
-; 397  : 	//copy_string_2(s, d, 13);
-; 398  : 	//multi();
-; 399  : 	char dat[] = { 0x11, 0x33, 0x44, 0xAA, 0x00 };
-
-  000ff	c6 85 68 ff ff
-	ff 11		 mov	 BYTE PTR _dat$[ebp], 17	; 00000011H
-  00106	c6 85 69 ff ff
-	ff 33		 mov	 BYTE PTR _dat$[ebp+1], 51 ; 00000033H
-  0010d	c6 85 6a ff ff
-	ff 44		 mov	 BYTE PTR _dat$[ebp+2], 68 ; 00000044H
-  00114	c6 85 6b ff ff
-	ff aa		 mov	 BYTE PTR _dat$[ebp+3], -86 ; ffffffaaH
-  0011b	c6 85 6c ff ff
-	ff 00		 mov	 BYTE PTR _dat$[ebp+4], 0
-
-; 400  : 	//f = func(dat);
-; 401  : 	//interpret();
-; 402  : 	return 0;
-
-  00122	33 c0		 xor	 eax, eax
-
-; 403  : }
-
-  00124	52		 push	 edx
-  00125	8b cd		 mov	 ecx, ebp
-  00127	50		 push	 eax
-  00128	8d 15 00 00 00
+  00116	52		 push	 edx
+  00117	8b cd		 mov	 ecx, ebp
+  00119	50		 push	 eax
+  0011a	8d 15 00 00 00
 	00		 lea	 edx, DWORD PTR $LN10@main
-  0012e	e8 00 00 00 00	 call	 @_RTC_CheckStackVars@8
-  00133	58		 pop	 eax
-  00134	5a		 pop	 edx
-  00135	5f		 pop	 edi
-  00136	5e		 pop	 esi
-  00137	5b		 pop	 ebx
-  00138	8b 4d fc	 mov	 ecx, DWORD PTR __$ArrayPad$[ebp]
-  0013b	33 cd		 xor	 ecx, ebp
-  0013d	e8 00 00 00 00	 call	 @__security_check_cookie@4
-  00142	81 c4 5c 01 00
+  00120	e8 00 00 00 00	 call	 @_RTC_CheckStackVars@8
+  00125	58		 pop	 eax
+  00126	5a		 pop	 edx
+  00127	5f		 pop	 edi
+  00128	5e		 pop	 esi
+  00129	5b		 pop	 ebx
+  0012a	8b 4d fc	 mov	 ecx, DWORD PTR __$ArrayPad$[ebp]
+  0012d	33 cd		 xor	 ecx, ebp
+  0012f	e8 00 00 00 00	 call	 @__security_check_cookie@4
+  00134	81 c4 5c 01 00
 	00		 add	 esp, 348		; 0000015cH
-  00148	3b ec		 cmp	 ebp, esp
-  0014a	e8 00 00 00 00	 call	 __RTC_CheckEsp
-  0014f	8b e5		 mov	 esp, ebp
-  00151	5d		 pop	 ebp
-  00152	c3		 ret	 0
-  00153	90		 npad	 1
+  0013a	3b ec		 cmp	 ebp, esp
+  0013c	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00141	8b e5		 mov	 esp, ebp
+  00143	5d		 pop	 ebp
+  00144	c3		 ret	 0
+  00145	8d 49 00	 npad	 3
 $LN10@main:
-  00154	06 00 00 00	 DD	 6
-  00158	00 00 00 00	 DD	 $LN9@main
+  00148	06 00 00 00	 DD	 6
+  0014c	00 00 00 00	 DD	 $LN9@main
 $LN9@main:
+  00150	f0 ff ff ff	 DD	 -16			; fffffff0H
+  00154	06 00 00 00	 DD	 6
+  00158	00 00 00 00	 DD	 $LN3@main
   0015c	dc ff ff ff	 DD	 -36			; ffffffdcH
-  00160	0d 00 00 00	 DD	 13			; 0000000dH
-  00164	00 00 00 00	 DD	 $LN3@main
+  00160	0c 00 00 00	 DD	 12			; 0000000cH
+  00164	00 00 00 00	 DD	 $LN4@main
   00168	c4 ff ff ff	 DD	 -60			; ffffffc4H
-  0016c	0d 00 00 00	 DD	 13			; 0000000dH
-  00170	00 00 00 00	 DD	 $LN4@main
+  0016c	10 00 00 00	 DD	 16			; 00000010H
+  00170	00 00 00 00	 DD	 $LN5@main
   00174	b0 ff ff ff	 DD	 -80			; ffffffb0H
   00178	0c 00 00 00	 DD	 12			; 0000000cH
-  0017c	00 00 00 00	 DD	 $LN5@main
-  00180	98 ff ff ff	 DD	 -104			; ffffff98H
-  00184	10 00 00 00	 DD	 16			; 00000010H
-  00188	00 00 00 00	 DD	 $LN6@main
-  0018c	84 ff ff ff	 DD	 -124			; ffffff84H
-  00190	0c 00 00 00	 DD	 12			; 0000000cH
-  00194	00 00 00 00	 DD	 $LN7@main
-  00198	68 ff ff ff	 DD	 -152			; ffffff68H
-  0019c	05 00 00 00	 DD	 5
-  001a0	00 00 00 00	 DD	 $LN8@main
+  0017c	00 00 00 00	 DD	 $LN6@main
+  00180	80 ff ff ff	 DD	 -128			; ffffff80H
+  00184	0d 00 00 00	 DD	 13			; 0000000dH
+  00188	00 00 00 00	 DD	 $LN7@main
+  0018c	68 ff ff ff	 DD	 -152			; ffffff68H
+  00190	0d 00 00 00	 DD	 13			; 0000000dH
+  00194	00 00 00 00	 DD	 $LN8@main
 $LN8@main:
-  001a4	64		 DB	 100			; 00000064H
-  001a5	61		 DB	 97			; 00000061H
-  001a6	74		 DB	 116			; 00000074H
-  001a7	00		 DB	 0
+  00198	64		 DB	 100			; 00000064H
+  00199	00		 DB	 0
 $LN7@main:
-  001a8	67		 DB	 103			; 00000067H
-  001a9	6b		 DB	 107			; 0000006bH
-  001aa	33		 DB	 51			; 00000033H
-  001ab	00		 DB	 0
+  0019a	73		 DB	 115			; 00000073H
+  0019b	00		 DB	 0
 $LN6@main:
-  001ac	67		 DB	 103			; 00000067H
-  001ad	6b		 DB	 107			; 0000006bH
-  001ae	32		 DB	 50			; 00000032H
-  001af	00		 DB	 0
+  0019c	67		 DB	 103			; 00000067H
+  0019d	6b		 DB	 107			; 0000006bH
+  0019e	33		 DB	 51			; 00000033H
+  0019f	00		 DB	 0
 $LN5@main:
-  001b0	67		 DB	 103			; 00000067H
-  001b1	6b		 DB	 107			; 0000006bH
-  001b2	00		 DB	 0
+  001a0	67		 DB	 103			; 00000067H
+  001a1	6b		 DB	 107			; 0000006bH
+  001a2	32		 DB	 50			; 00000032H
+  001a3	00		 DB	 0
 $LN4@main:
-  001b3	64		 DB	 100			; 00000064H
-  001b4	00		 DB	 0
+  001a4	67		 DB	 103			; 00000067H
+  001a5	6b		 DB	 107			; 0000006bH
+  001a6	00		 DB	 0
 $LN3@main:
-  001b5	73		 DB	 115			; 00000073H
-  001b6	00		 DB	 0
+  001a7	64		 DB	 100			; 00000064H
+  001a8	61		 DB	 97			; 00000061H
+  001a9	74		 DB	 116			; 00000074H
+  001aa	00		 DB	 0
 _main	ENDP
+_TEXT	ENDS
+; Function compile flags: /Odtp /RTCsu /ZI
+; File v:\school files\cs3843\vsprojects\test_3_study\test_3_study\source.cpp
+;	COMDAT ?find_Y@@YAHPADD@Z
+_TEXT	SEGMENT
+_gK$ = 8						; size = 4
+_Y$ = 12						; size = 1
+?find_Y@@YAHPADD@Z PROC					; find_Y, COMDAT
+
+; 294  : int find_Y(char* gK, char Y){
+
+  00000	55		 push	 ebp
+  00001	8b ec		 mov	 ebp, esp
+  00003	81 ec c0 00 00
+	00		 sub	 esp, 192		; 000000c0H
+  00009	53		 push	 ebx
+  0000a	56		 push	 esi
+  0000b	57		 push	 edi
+  0000c	8d bd 40 ff ff
+	ff		 lea	 edi, DWORD PTR [ebp-192]
+  00012	b9 30 00 00 00	 mov	 ecx, 48			; 00000030H
+  00017	b8 cc cc cc cc	 mov	 eax, -858993460		; ccccccccH
+  0001c	f3 ab		 rep stosd
+
+; 295  : 	__asm{
+; 296  : 		xor ecx, ecx;
+
+  0001e	33 c9		 xor	 ecx, ecx
+
+; 297  : 		xor eax, eax;
+
+  00020	33 c0		 xor	 eax, eax
+
+; 298  : 		xor ebx, ebx;
+
+  00022	33 db		 xor	 ebx, ebx
+
+; 299  : 		mov esi, gK;
+
+  00024	8b 75 08	 mov	 esi, DWORD PTR _gK$[ebp]
+
+; 300  : 		mov al, Y;
+
+  00027	8a 45 0c	 mov	 al, BYTE PTR _Y$[ebp]
+$Search_Loop$3:
+
+; 301  : 	Search_Loop:
+; 302  : 		mov ah, [esi + ecx];
+
+  0002a	8a 24 0e	 mov	 ah, BYTE PTR [esi+ecx]
+
+; 303  : 		test ah, ah;
+
+  0002d	84 e4		 test	 ah, ah
+
+; 304  : 		je Not_Found;
+
+  0002f	74 07		 je	 SHORT $Not_Found$4
+
+; 305  : 		cmp ah, al;
+
+  00031	3a e0		 cmp	 ah, al
+
+; 306  : 		je Found;
+
+  00033	74 0a		 je	 SHORT $Found$5
+
+; 307  : 		inc ecx;
+
+  00035	41		 inc	 ecx
+
+; 308  : 		jmp Search_Loop;
+
+  00036	eb f2		 jmp	 SHORT $Search_Loop$3
+$Not_Found$4:
+
+; 309  : 	Not_Found:
+; 310  : 		mov eax, -1;
+
+  00038	b8 ff ff ff ff	 mov	 eax, -1
+
+; 311  : 		jmp EXIT;
+
+  0003d	eb 04		 jmp	 SHORT $EXIT$6
+$Found$5:
+
+; 312  : 	Found:
+; 313  : 		mov eax, ecx;
+
+  0003f	8b c1		 mov	 eax, ecx
+
+; 314  : 		jmp EXIT;
+
+  00041	eb 00		 jmp	 SHORT $EXIT$6
+$EXIT$6:
+
+; 315  : 	EXIT:
+; 316  : 	}
+; 317  : 	return;
+; 318  : }
+
+  00043	5f		 pop	 edi
+  00044	5e		 pop	 esi
+  00045	5b		 pop	 ebx
+  00046	81 c4 c0 00 00
+	00		 add	 esp, 192		; 000000c0H
+  0004c	3b ec		 cmp	 ebp, esp
+  0004e	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  00053	8b e5		 mov	 esp, ebp
+  00055	5d		 pop	 ebp
+  00056	c3		 ret	 0
+?find_Y@@YAHPADD@Z ENDP					; find_Y
 _TEXT	ENDS
 ; Function compile flags: /Odtp /RTCsu /ZI
 ; File v:\school files\cs3843\vsprojects\test_3_study\test_3_study\source.cpp
@@ -281,7 +387,7 @@ _gk3$ = -20						; size = 12
 __$ArrayPad$ = -4					; size = 4
 ?interpret@@YAXXZ PROC					; interpret, COMDAT
 
-; 347  : void interpret(){
+; 233  : void interpret(){
 
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
@@ -299,7 +405,7 @@ __$ArrayPad$ = -4					; size = 4
   00023	33 c5		 xor	 eax, ebp
   00025	89 45 fc	 mov	 DWORD PTR __$ArrayPad$[ebp], eax
 
-; 348  : 	char gk3[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00 };
+; 234  : 	char gk3[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00 };
 
   00028	c6 45 ec 43	 mov	 BYTE PTR _gk3$[ebp], 67	; 00000043H
   0002c	c6 45 ed 61	 mov	 BYTE PTR _gk3$[ebp+1], 97 ; 00000061H
@@ -314,57 +420,55 @@ __$ArrayPad$ = -4					; size = 4
   00050	c6 45 f6 2e	 mov	 BYTE PTR _gk3$[ebp+10], 46 ; 0000002eH
   00054	c6 45 f7 00	 mov	 BYTE PTR _gk3$[ebp+11], 0
 
-; 349  : 	char *gptrK;
-; 350  : 	gptrK = gk3;
+; 235  : 	char *gptrK;
+; 236  : 	gptrK = gk3;
 
   00058	8d 45 ec	 lea	 eax, DWORD PTR _gk3$[ebp]
   0005b	89 45 e0	 mov	 DWORD PTR _gptrK$[ebp], eax
 
-; 351  : 	__asm{
-; 352  : 		lea esi, gk3;
+; 237  : 	__asm{
+; 238  : 		lea esi, gk3;
 
   0005e	8d 75 ec	 lea	 esi, DWORD PTR _gk3$[ebp]
 
-; 353  : 		mov eax, dword ptr [gk3+4];
+; 239  : 		mov eax, dword ptr [gk3+4];
 
   00061	8b 45 f0	 mov	 eax, DWORD PTR _gk3$[ebp+4]
 
-; 354  : 		lea edi, gptrK;
+; 240  : 		lea edi, gptrK;
 
   00064	8d 7d e0	 lea	 edi, DWORD PTR _gptrK$[ebp]
 
-; 355  : 		xor ecx, ecx;
+; 241  : 		xor ecx, ecx;
 
   00067	33 c9		 xor	 ecx, ecx
 
-; 356  : 		mov edx, [edi];
+; 242  : 		mov edx, [edi];
 
   00069	8b 17		 mov	 edx, DWORD PTR [edi]
 
-; 357  : 		add ecx, 4;
+; 243  : 		add ecx, 4;
 
   0006b	83 c1 04	 add	 ecx, 4
 
-; 358  : 		mov bx, word ptr [gk3 + ecx * 2];
+; 244  : 		mov bx, word ptr [gk3 + ecx * 2];
 
   0006e	66 8b 9c 4d ec
 	ff ff ff	 mov	 bx, WORD PTR _gk3$[ebp+ecx*2]
 
-; 359  : 		mov ah, byte ptr [gk3 + ecx * 2];
+; 245  : 		mov ah, byte ptr [gk3 + ecx * 2];
 
   00076	8a a4 4d ec ff
 	ff ff		 mov	 ah, BYTE PTR _gk3$[ebp+ecx*2]
 
-; 360  : 		mov al, byte ptr [gk3 + ecx * 2 + 1];
+; 246  : 		mov al, byte ptr [gk3 + ecx * 2 + 1];
 
   0007d	8a 84 4d ed ff
 	ff ff		 mov	 al, BYTE PTR _gk3$[ebp+ecx*2+1]
 
-; 361  : 
-; 362  : 
-; 363  : 
-; 364  : 	}
-; 365  : }
+; 247  : 	}
+; 248  : 	return;
+; 249  : }
 
   00084	52		 push	 edx
   00085	8b cd		 mov	 ecx, ebp
@@ -418,7 +522,7 @@ _TEXT	ENDS
 _TEXT	SEGMENT
 ?multi@@YAXXZ PROC					; multi, COMDAT
 
-; 338  : void multi(){
+; 224  : void multi(){
 
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
@@ -433,22 +537,22 @@ _TEXT	SEGMENT
   00017	b8 cc cc cc cc	 mov	 eax, -858993460		; ccccccccH
   0001c	f3 ab		 rep stosd
 
-; 339  : 	__asm{
-; 340  : 		xor ecx, ecx;
+; 225  : 	__asm{
+; 226  : 		xor ecx, ecx;
 
   0001e	33 c9		 xor	 ecx, ecx
 
-; 341  : 		mov cl, 0x08;
+; 227  : 		mov cl, 0x08;
 
   00020	b1 08		 mov	 cl, 8
 
-; 342  : 		shl cl, 3;
+; 228  : 		shl cl, 3;
 
   00022	c0 e1 03	 shl	 cl, 3
 
-; 343  : 
-; 344  : 	}
-; 345  : }
+; 229  : 	}
+; 230  : 	return;
+; 231  : }
 
   00025	5f		 pop	 edi
   00026	5e		 pop	 esi
@@ -469,7 +573,7 @@ _TEXT	SEGMENT
 _d$ = 8							; size = 4
 ?func@@YAHPAD@Z PROC					; func, COMDAT
 
-; 323  : int func(char* d){
+; 208  : int func(char* d){
 
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
@@ -484,45 +588,46 @@ _d$ = 8							; size = 4
   00017	b8 cc cc cc cc	 mov	 eax, -858993460		; ccccccccH
   0001c	f3 ab		 rep stosd
 
-; 324  : 	__asm{
-; 325  : 		xor ecx, ecx;
+; 209  : 	__asm{
+; 210  : 		xor ecx, ecx;
 
   0001e	33 c9		 xor	 ecx, ecx
 
-; 326  : 		xor eax, eax;
+; 211  : 		xor eax, eax;
 
   00020	33 c0		 xor	 eax, eax
 
-; 327  : 		mov edi, d;
+; 212  : 		mov edi, d;
 
   00022	8b 7d 08	 mov	 edi, DWORD PTR _d$[ebp]
 $String_Loop$3:
 
-; 328  : 	String_Loop:
-; 329  : 		cmp[edi + ecx], 0x00;
+; 213  : 	String_Loop:
+; 214  : 		cmp[edi + ecx], 0x00;
 
   00025	80 3c 0f 00	 cmp	 BYTE PTR [edi+ecx], 0
 
-; 330  : 		je EXIT;
+; 215  : 		je EXIT;
 
   00029	74 03		 je	 SHORT $EXIT$4
 
-; 331  : 		inc ecx;
+; 216  : 		inc ecx;
 
   0002b	41		 inc	 ecx
 
-; 332  : 		jmp String_Loop;
+; 217  : 		jmp String_Loop;
 
   0002c	eb f7		 jmp	 SHORT $String_Loop$3
 $EXIT$4:
 
-; 333  : 	EXIT:
-; 334  : 		mov eax, ecx;
+; 218  : 	EXIT:
+; 219  : 		mov eax, ecx;
 
   0002e	8b c1		 mov	 eax, ecx
 
-; 335  : 	}
-; 336  : }
+; 220  : 	}
+; 221  : 	return;
+; 222  : }
 
   00030	5f		 pop	 edi
   00031	5e		 pop	 esi
@@ -545,7 +650,7 @@ _d$ = 12						; size = 4
 _l$ = 16						; size = 4
 ?copy_string_2@@YAXPAD0H@Z PROC				; copy_string_2, COMDAT
 
-; 309  : void copy_string_2(char* s, char* d, int l){
+; 193  : void copy_string_2(char* s, char* d, int l){
 
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
@@ -560,40 +665,41 @@ _l$ = 16						; size = 4
   00017	b8 cc cc cc cc	 mov	 eax, -858993460		; ccccccccH
   0001c	f3 ab		 rep stosd
 
-; 310  : 	__asm{
-; 311  : 		cld;
+; 194  : 	__asm{
+; 195  : 		cld;
 
   0001e	fc		 cld
 
-; 312  : 		mov esi, s;
+; 196  : 		mov esi, s;
 
   0001f	8b 75 08	 mov	 esi, DWORD PTR _s$[ebp]
 
-; 313  : 		mov edi, d;
+; 197  : 		mov edi, d;
 
   00022	8b 7d 0c	 mov	 edi, DWORD PTR _d$[ebp]
 $Loop_Through_String$3:
 
-; 314  : 
-; 315  : 	Loop_Through_String:
-; 316  : 		lodsb;
+; 198  : 
+; 199  : 	Loop_Through_String:
+; 200  : 		lodsb;
 
   00025	ac		 lodsb
 
-; 317  : 		stosb;
+; 201  : 		stosb;
 
   00026	aa		 stosb
 
-; 318  : 		cmp al, 0;
+; 202  : 		cmp al, 0;
 
   00027	3c 00		 cmp	 al, 0
 
-; 319  : 		jne Loop_Through_String;
+; 203  : 		jne Loop_Through_String;
 
   00029	75 fa		 jne	 SHORT $Loop_Through_String$3
 
-; 320  : 	}
-; 321  : }
+; 204  : 	}
+; 205  : 	return;
+; 206  : }
 
   0002b	5f		 pop	 edi
   0002c	5e		 pop	 esi
@@ -616,7 +722,7 @@ _d$ = 12						; size = 4
 _l$ = 16						; size = 4
 ?copy_string@@YAXPAD0H@Z PROC				; copy_string, COMDAT
 
-; 299  : void copy_string(char* s, char* d, int l){
+; 182  : void copy_string(char* s, char* d, int l){
 
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
@@ -631,29 +737,30 @@ _l$ = 16						; size = 4
   00017	b8 cc cc cc cc	 mov	 eax, -858993460		; ccccccccH
   0001c	f3 ab		 rep stosd
 
-; 300  : 	__asm{
-; 301  : 		cld;
+; 183  : 	__asm{
+; 184  : 		cld;
 
   0001e	fc		 cld
 
-; 302  : 		mov esi, s;
+; 185  : 		mov esi, s;
 
   0001f	8b 75 08	 mov	 esi, DWORD PTR _s$[ebp]
 
-; 303  : 		mov edi, d;
+; 186  : 		mov edi, d;
 
   00022	8b 7d 0c	 mov	 edi, DWORD PTR _d$[ebp]
 
-; 304  : 		mov ecx, l;
+; 187  : 		mov ecx, l;
 
   00025	8b 4d 10	 mov	 ecx, DWORD PTR _l$[ebp]
 
-; 305  : 		rep movsb;
+; 188  : 		rep movsb;
 
   00028	f3 a4		 rep	  movsb
 
-; 306  : 	}
-; 307  : }
+; 189  : 	}
+; 190  : 	return;
+; 191  : }
 
   0002a	5f		 pop	 edi
   0002b	5e		 pop	 esi
@@ -678,7 +785,7 @@ _find$ = 12						; size = 4
 _len$ = 16						; size = 4
 ?find_it@@YAHPAD0H@Z PROC				; find_it, COMDAT
 
-; 275  : int find_it(char* str, char* find, int len){
+; 158  : int find_it(char* str, char* find, int len){
 
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
@@ -696,81 +803,81 @@ _len$ = 16						; size = 4
   00023	33 c5		 xor	 eax, ebp
   00025	89 45 fc	 mov	 DWORD PTR __$ArrayPad$[ebp], eax
 
-; 276  : 	int found = -1;
+; 159  : 	int found = -1;
 
   00028	c7 45 f4 ff ff
 	ff ff		 mov	 DWORD PTR _found$[ebp], -1
 
-; 277  : 	__asm{
-; 278  : 		xor ecx, ecx;
+; 160  : 	__asm{
+; 161  : 		xor ecx, ecx;
 
   0002f	33 c9		 xor	 ecx, ecx
 
-; 279  : 		xor ebx, ebx;
+; 162  : 		xor ebx, ebx;
 
   00031	33 db		 xor	 ebx, ebx
 
-; 280  : 		xor eax, eax;
+; 163  : 		xor eax, eax;
 
   00033	33 c0		 xor	 eax, eax
 
-; 281  : 		mov esi, str;
+; 164  : 		mov esi, str;
 
   00035	8b 75 08	 mov	 esi, DWORD PTR _str$[ebp]
 
-; 282  : 		mov edi, find;
+; 165  : 		mov edi, find;
 
   00038	8b 7d 0c	 mov	 edi, DWORD PTR _find$[ebp]
 
-; 283  : 		mov ah, [edi];
+; 166  : 		mov ah, [edi];
 
   0003b	8a 27		 mov	 ah, BYTE PTR [edi]
 $String_Loop$3:
 
-; 284  : 	String_Loop:
-; 285  : 		mov al, [esi + ecx];
+; 167  : 	String_Loop:
+; 168  : 		mov al, [esi + ecx];
 
   0003d	8a 04 0e	 mov	 al, BYTE PTR [esi+ecx]
 
-; 286  : 		cmp ah, al;
+; 169  : 		cmp ah, al;
 
   00040	3a e0		 cmp	 ah, al
 
-; 287  : 		je Found_It;
+; 170  : 		je Found_It;
 
   00042	74 08		 je	 SHORT $Found_It$4
 
-; 288  : 		inc ecx;
+; 171  : 		inc ecx;
 
   00044	41		 inc	 ecx
 
-; 289  : 		cmp ecx, len;
+; 172  : 		cmp ecx, len;
 
   00045	3b 4d 10	 cmp	 ecx, DWORD PTR _len$[ebp]
 
-; 290  : 		jb String_Loop;
+; 173  : 		jb String_Loop;
 
   00048	72 f3		 jb	 SHORT $String_Loop$3
 
-; 291  : 		jmp Exit;
+; 174  : 		jmp Exit;
 
   0004a	eb 07		 jmp	 SHORT $Exit$5
 $Found_It$4:
 
-; 292  : 	Found_It:
-; 293  : 		mov found, 1;
+; 175  : 	Found_It:
+; 176  : 		mov found, 1;
 
   0004c	c7 45 f4 01 00
 	00 00		 mov	 DWORD PTR _found$[ebp], 1
 $Exit$5:
 
-; 294  : 	Exit:
-; 295  : 	}
-; 296  : 	return found;
+; 177  : 	Exit:
+; 178  : 	}
+; 179  : 	return found;
 
   00053	8b 45 f4	 mov	 eax, DWORD PTR _found$[ebp]
 
-; 297  : }
+; 180  : }
 
   00056	5f		 pop	 edi
   00057	5e		 pop	 esi
@@ -795,7 +902,7 @@ _gK$ = 8						; size = 4
 _len$ = 12						; size = 4
 ?reverse_4_bytes@@YAXPADH@Z PROC			; reverse_4_bytes, COMDAT
 
-; 209  : void reverse_4_bytes(char *gK, int len){
+; 130  : void reverse_4_bytes(char *gK, int len){
 
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
@@ -810,75 +917,77 @@ _len$ = 12						; size = 4
   00017	b8 cc cc cc cc	 mov	 eax, -858993460		; ccccccccH
   0001c	f3 ab		 rep stosd
 
-; 210  : 
-; 211  : 	__asm{
-; 212  : 		xor ecx, ecx;
+; 131  : 
+; 132  : 	__asm{
+; 133  : 		xor ecx, ecx;
 
   0001e	33 c9		 xor	 ecx, ecx
 
-; 213  : 		xor ebx, ebx;
+; 134  : 		xor ebx, ebx;
 
   00020	33 db		 xor	 ebx, ebx
 
-; 214  : 		xor eax, eax;
+; 135  : 		xor eax, eax;
 
   00022	33 c0		 xor	 eax, eax
 
-; 215  : 		mov esi, gK;
+; 136  : 		mov esi, gK;
 
   00024	8b 75 08	 mov	 esi, DWORD PTR _gK$[ebp]
 
-; 216  : 		mov ecx, len;
+; 137  : 		mov ecx, len;
 
   00027	8b 4d 0c	 mov	 ecx, DWORD PTR _len$[ebp]
 
-; 217  : 		shr ecx, 2;
+; 138  : 		shr ecx, 2;
 
   0002a	c1 e9 02	 shr	 ecx, 2
 $Reverse_Loop$3:
 
-; 218  : 	Reverse_Loop:
-; 219  : 		//mov eax, [esi + ebx * 4];
-; 220  : 		//bswap eax;
-; 221  : 		//mov[esi + ebx * 4], eax;
-; 222  : 		mov ax, [esi + ebx * 4];
+; 139  : 	Reverse_Loop:
+; 140  : 		//mov eax, [esi + ebx * 4];
+; 141  : 		//bswap eax;
+; 142  : 		//mov[esi + ebx * 4], eax;
+; 143  : 		mov ax, [esi + ebx * 4];
 
   0002d	66 8b 04 9e	 mov	 ax, WORD PTR [esi+ebx*4]
 
-; 223  : 		ror ax, 8;
+; 144  : 		ror ax, 8;
 
   00031	66 c1 c8 08	 ror	 ax, 8
 
-; 224  : 		mov dx, [esi + ebx * 4 + 2];
+; 145  : 		mov dx, [esi + ebx * 4 + 2];
 
   00035	66 8b 54 9e 02	 mov	 dx, WORD PTR [esi+ebx*4+2]
 
-; 225  : 		ror dx, 8;
+; 146  : 		ror dx, 8;
 
   0003a	66 c1 ca 08	 ror	 dx, 8
 
-; 226  : 		mov[esi + ebx * 4], dx;
+; 147  : 		mov[esi + ebx * 4], dx;
 
   0003e	66 89 14 9e	 mov	 WORD PTR [esi+ebx*4], dx
 
-; 227  : 		mov[esi + ebx * 4 + 2], ax;
+; 148  : 		mov[esi + ebx * 4 + 2], ax;
 
   00042	66 89 44 9e 02	 mov	 WORD PTR [esi+ebx*4+2], ax
 
-; 228  : 		inc ebx;
+; 149  : 		inc ebx;
 
   00047	43		 inc	 ebx
 
-; 229  : 		dec ecx;
+; 150  : 		dec ecx;
 
   00048	49		 dec	 ecx
 
-; 230  : 		jne Reverse_Loop;
+; 151  : 		jne Reverse_Loop;
 
   00049	75 e2		 jne	 SHORT $Reverse_Loop$3
 
-; 231  : 	}
-; 232  : }
+; 152  : 	}
+; 153  : 	return;
+; 154  : 
+; 155  : }
 
   0004b	5f		 pop	 edi
   0004c	5e		 pop	 esi
@@ -900,7 +1009,7 @@ _gK$ = 8						; size = 4
 _len$ = 12						; size = 4
 ?reverse_2_bytes@@YAXPADH@Z PROC			; reverse_2_bytes, COMDAT
 
-; 174  : void reverse_2_bytes(char *gK, int len){
+; 104  : void reverse_2_bytes(char *gK, int len){
 
   00000	55		 push	 ebp
   00001	8b ec		 mov	 ebp, esp
@@ -915,373 +1024,79 @@ _len$ = 12						; size = 4
   00017	b8 cc cc cc cc	 mov	 eax, -858993460		; ccccccccH
   0001c	f3 ab		 rep stosd
 
-; 175  : 
-; 176  : 	__asm{
-; 177  : 		xor ecx, ecx;
+; 105  : 
+; 106  : 	__asm{
+; 107  : 		xor ecx, ecx;
 
   0001e	33 c9		 xor	 ecx, ecx
 
-; 178  : 		xor ebx, ebx;
+; 108  : 		xor ebx, ebx;
 
   00020	33 db		 xor	 ebx, ebx
 
-; 179  : 		xor eax, eax;
+; 109  : 		xor eax, eax;
 
   00022	33 c0		 xor	 eax, eax
 
-; 180  : 		mov ecx, len;
+; 110  : 		mov ecx, len;
 
   00024	8b 4d 0c	 mov	 ecx, DWORD PTR _len$[ebp]
 
-; 181  : 		shr ecx, 1;
+; 111  : 		shr ecx, 1;
 
   00027	d1 e9		 shr	 ecx, 1
 
-; 182  : 		mov esi, gK;
+; 112  : 		mov esi, gK;
 
   00029	8b 75 08	 mov	 esi, DWORD PTR _gK$[ebp]
 $Reverse_Loop$3:
 
-; 183  : 	Reverse_Loop:
-; 184  : 		mov ax, [esi + ebx * 2];
+; 113  : 	Reverse_Loop:
+; 114  : 		mov ax, [esi + ebx * 2];
 
   0002c	66 8b 04 5e	 mov	 ax, WORD PTR [esi+ebx*2]
 
-; 185  : 		ror ax, 8;
+; 115  : 		bswap ax;
 
-  00030	66 c1 c8 08	 ror	 ax, 8
+  00030	0f c8		 bswap	 eax
 
-; 186  : 		mov[esi + ebx * 2], ax;
+; 116  : 		mov[esi + ebx * 2], ax;
 
-  00034	66 89 04 5e	 mov	 WORD PTR [esi+ebx*2], ax
+  00032	66 89 04 5e	 mov	 WORD PTR [esi+ebx*2], ax
 
-; 187  : 		inc ebx;
+; 117  : 		/*
+; 118  : 		mov ax, [esi + ebx * 2];
+; 119  : 		ror ax, 8;
+; 120  : 		mov[esi + ebx * 2], ax;
+; 121  : 		*/
+; 122  : 		inc ebx;
 
-  00038	43		 inc	 ebx
+  00036	43		 inc	 ebx
 
-; 188  : 		dec ecx;
+; 123  : 		dec ecx;
 
-  00039	49		 dec	 ecx
+  00037	49		 dec	 ecx
 
-; 189  : 		jne Reverse_Loop;
+; 124  : 		jne Reverse_Loop;
 
-  0003a	75 f0		 jne	 SHORT $Reverse_Loop$3
+  00038	75 f2		 jne	 SHORT $Reverse_Loop$3
 
-; 190  : 	}
-; 191  : 
-; 192  : }
+; 125  : 
+; 126  : 	}
+; 127  : 	return;
+; 128  : }
 
-  0003c	5f		 pop	 edi
-  0003d	5e		 pop	 esi
-  0003e	5b		 pop	 ebx
-  0003f	81 c4 c0 00 00
+  0003a	5f		 pop	 edi
+  0003b	5e		 pop	 esi
+  0003c	5b		 pop	 ebx
+  0003d	81 c4 c0 00 00
 	00		 add	 esp, 192		; 000000c0H
-  00045	3b ec		 cmp	 ebp, esp
-  00047	e8 00 00 00 00	 call	 __RTC_CheckEsp
-  0004c	8b e5		 mov	 esp, ebp
-  0004e	5d		 pop	 ebp
-  0004f	c3		 ret	 0
+  00043	3b ec		 cmp	 ebp, esp
+  00045	e8 00 00 00 00	 call	 __RTC_CheckEsp
+  0004a	8b e5		 mov	 esp, ebp
+  0004c	5d		 pop	 ebp
+  0004d	c3		 ret	 0
 ?reverse_2_bytes@@YAXPADH@Z ENDP			; reverse_2_bytes
-_TEXT	ENDS
-; Function compile flags: /Odtp /RTCsu /ZI
-; File v:\school files\cs3843\vsprojects\test_3_study\test_3_study\source.cpp
-;	COMDAT ?reverse_it3@@YAXPADH@Z
-_TEXT	SEGMENT
-_s$ = 8							; size = 4
-_l$ = 12						; size = 4
-?reverse_it3@@YAXPADH@Z PROC				; reverse_it3, COMDAT
-
-; 149  : void reverse_it3(char* s, int l){
-
-  00000	55		 push	 ebp
-  00001	8b ec		 mov	 ebp, esp
-  00003	81 ec c0 00 00
-	00		 sub	 esp, 192		; 000000c0H
-  00009	53		 push	 ebx
-  0000a	56		 push	 esi
-  0000b	57		 push	 edi
-  0000c	8d bd 40 ff ff
-	ff		 lea	 edi, DWORD PTR [ebp-192]
-  00012	b9 30 00 00 00	 mov	 ecx, 48			; 00000030H
-  00017	b8 cc cc cc cc	 mov	 eax, -858993460		; ccccccccH
-  0001c	f3 ab		 rep stosd
-
-; 150  : 	__asm{
-; 151  : 		xor ecx, ecx;
-
-  0001e	33 c9		 xor	 ecx, ecx
-
-; 152  : 		xor ebx, ebx;
-
-  00020	33 db		 xor	 ebx, ebx
-
-; 153  : 		xor eax, eax;
-
-  00022	33 c0		 xor	 eax, eax
-
-; 154  : 		mov edi, s;
-
-  00024	8b 7d 08	 mov	 edi, DWORD PTR _s$[ebp]
-
-; 155  : 		mov ebx, l;
-
-  00027	8b 5d 0c	 mov	 ebx, DWORD PTR _l$[ebp]
-
-; 156  : 		shr ebx, 1;
-
-  0002a	d1 eb		 shr	 ebx, 1
-$Reverse_It_Loop$3:
-
-; 157  : 
-; 158  : 	Reverse_It_Loop:
-; 159  : 		mov ax, [edi + ecx * 2];
-
-  0002c	66 8b 04 4f	 mov	 ax, WORD PTR [edi+ecx*2]
-
-; 160  : 		ror ax, 8;
-
-  00030	66 c1 c8 08	 ror	 ax, 8
-
-; 161  : 		mov[edi + ecx * 2], ax;
-
-  00034	66 89 04 4f	 mov	 WORD PTR [edi+ecx*2], ax
-
-; 162  : 		inc ecx;
-
-  00038	41		 inc	 ecx
-
-; 163  : 		cmp ecx, ebx;
-
-  00039	3b cb		 cmp	 ecx, ebx
-
-; 164  : 		jb Reverse_It_Loop;
-
-  0003b	72 ef		 jb	 SHORT $Reverse_It_Loop$3
-
-; 165  : 
-; 166  : 
-; 167  : 	}
-; 168  : 
-; 169  : }
-
-  0003d	5f		 pop	 edi
-  0003e	5e		 pop	 esi
-  0003f	5b		 pop	 ebx
-  00040	81 c4 c0 00 00
-	00		 add	 esp, 192		; 000000c0H
-  00046	3b ec		 cmp	 ebp, esp
-  00048	e8 00 00 00 00	 call	 __RTC_CheckEsp
-  0004d	8b e5		 mov	 esp, ebp
-  0004f	5d		 pop	 ebp
-  00050	c3		 ret	 0
-?reverse_it3@@YAXPADH@Z ENDP				; reverse_it3
-_TEXT	ENDS
-; Function compile flags: /Odtp /RTCsu /ZI
-; File v:\school files\cs3843\vsprojects\test_3_study\test_3_study\source.cpp
-;	COMDAT ?reverse_it2@@YAXPADH@Z
-_TEXT	SEGMENT
-_gk$ = 8						; size = 4
-_len$ = 12						; size = 4
-?reverse_it2@@YAXPADH@Z PROC				; reverse_it2, COMDAT
-
-; 126  : void reverse_it2(char* gk, int len){
-
-  00000	55		 push	 ebp
-  00001	8b ec		 mov	 ebp, esp
-  00003	81 ec c0 00 00
-	00		 sub	 esp, 192		; 000000c0H
-  00009	53		 push	 ebx
-  0000a	56		 push	 esi
-  0000b	57		 push	 edi
-  0000c	8d bd 40 ff ff
-	ff		 lea	 edi, DWORD PTR [ebp-192]
-  00012	b9 30 00 00 00	 mov	 ecx, 48			; 00000030H
-  00017	b8 cc cc cc cc	 mov	 eax, -858993460		; ccccccccH
-  0001c	f3 ab		 rep stosd
-
-; 127  : 	__asm{
-; 128  : 		xor ecx, ecx;
-
-  0001e	33 c9		 xor	 ecx, ecx
-
-; 129  : 		xor eax, eax;
-
-  00020	33 c0		 xor	 eax, eax
-
-; 130  : 		xor ebx, ebx;
-
-  00022	33 db		 xor	 ebx, ebx
-
-; 131  : 		xor edx, edx;
-
-  00024	33 d2		 xor	 edx, edx
-
-; 132  : 		mov ecx, len;
-
-  00026	8b 4d 0c	 mov	 ecx, DWORD PTR _len$[ebp]
-
-; 133  : 		shr ecx, 2;
-
-  00029	c1 e9 02	 shr	 ecx, 2
-
-; 134  : 		mov esi, gk;
-
-  0002c	8b 75 08	 mov	 esi, DWORD PTR _gk$[ebp]
-$Reverse_Loop$3:
-
-; 135  : 
-; 136  : 	Reverse_Loop:
-; 137  : 		mov ax, [esi + ebx * 4];
-
-  0002f	66 8b 04 9e	 mov	 ax, WORD PTR [esi+ebx*4]
-
-; 138  : 		ror ax, 8;
-
-  00033	66 c1 c8 08	 ror	 ax, 8
-
-; 139  : 		mov dx, [esi + ebx * 4 + 2];
-
-  00037	66 8b 54 9e 02	 mov	 dx, WORD PTR [esi+ebx*4+2]
-
-; 140  : 		ror dx, 8;
-
-  0003c	66 c1 ca 08	 ror	 dx, 8
-
-; 141  : 		mov[esi + ebx * 4], ax;
-
-  00040	66 89 04 9e	 mov	 WORD PTR [esi+ebx*4], ax
-
-; 142  : 		mov[esi + ebx * 4 + 2], dx;
-
-  00044	66 89 54 9e 02	 mov	 WORD PTR [esi+ebx*4+2], dx
-
-; 143  : 		inc ebx;
-
-  00049	43		 inc	 ebx
-
-; 144  : 		cmp ebx, ecx;
-
-  0004a	3b d9		 cmp	 ebx, ecx
-
-; 145  : 		jb Reverse_Loop;
-
-  0004c	72 e1		 jb	 SHORT $Reverse_Loop$3
-
-; 146  : 	}
-; 147  : }
-
-  0004e	5f		 pop	 edi
-  0004f	5e		 pop	 esi
-  00050	5b		 pop	 ebx
-  00051	81 c4 c0 00 00
-	00		 add	 esp, 192		; 000000c0H
-  00057	3b ec		 cmp	 ebp, esp
-  00059	e8 00 00 00 00	 call	 __RTC_CheckEsp
-  0005e	8b e5		 mov	 esp, ebp
-  00060	5d		 pop	 ebp
-  00061	c3		 ret	 0
-?reverse_it2@@YAXPADH@Z ENDP				; reverse_it2
-_TEXT	ENDS
-; Function compile flags: /Odtp /RTCsu /ZI
-; File v:\school files\cs3843\vsprojects\test_3_study\test_3_study\source.cpp
-;	COMDAT ?reverse_it@@YAXPADH0@Z
-_TEXT	SEGMENT
-_gk$ = 8						; size = 4
-_len$ = 12						; size = 4
-_ptr$ = 16						; size = 4
-?reverse_it@@YAXPADH0@Z PROC				; reverse_it, COMDAT
-
-; 103  : void reverse_it(char *gk, int len, char *ptr){
-
-  00000	55		 push	 ebp
-  00001	8b ec		 mov	 ebp, esp
-  00003	81 ec c0 00 00
-	00		 sub	 esp, 192		; 000000c0H
-  00009	53		 push	 ebx
-  0000a	56		 push	 esi
-  0000b	57		 push	 edi
-  0000c	8d bd 40 ff ff
-	ff		 lea	 edi, DWORD PTR [ebp-192]
-  00012	b9 30 00 00 00	 mov	 ecx, 48			; 00000030H
-  00017	b8 cc cc cc cc	 mov	 eax, -858993460		; ccccccccH
-  0001c	f3 ab		 rep stosd
-
-; 104  : 	__asm{
-; 105  : 		mov ecx, len;
-
-  0001e	8b 4d 0c	 mov	 ecx, DWORD PTR _len$[ebp]
-
-; 106  : 		shr ecx, 2;
-
-  00021	c1 e9 02	 shr	 ecx, 2
-
-; 107  : 		mov esi, gk;
-
-  00024	8b 75 08	 mov	 esi, DWORD PTR _gk$[ebp]
-
-; 108  : 		xor ebx, ebx;
-
-  00027	33 db		 xor	 ebx, ebx
-
-; 109  : 		xor eax, eax;
-
-  00029	33 c0		 xor	 eax, eax
-$next$3:
-
-; 110  : 
-; 111  : 	next:
-; 112  : 		mov ax, [esi + ebx * 4];
-
-  0002b	66 8b 04 9e	 mov	 ax, WORD PTR [esi+ebx*4]
-
-; 113  : 		ror ax, 8;
-
-  0002f	66 c1 c8 08	 ror	 ax, 8
-
-; 114  : 		mov dx, [esi + ebx * 4 + 2];
-
-  00033	66 8b 54 9e 02	 mov	 dx, WORD PTR [esi+ebx*4+2]
-
-; 115  : 		ror dx, 8;
-
-  00038	66 c1 ca 08	 ror	 dx, 8
-
-; 116  : 		mov [esi + ebx * 4], ax;
-
-  0003c	66 89 04 9e	 mov	 WORD PTR [esi+ebx*4], ax
-
-; 117  : 		mov [esi + ebx * 4+2], dx;
-
-  00040	66 89 54 9e 02	 mov	 WORD PTR [esi+ebx*4+2], dx
-
-; 118  : 		inc ebx;
-
-  00045	43		 inc	 ebx
-
-; 119  : 		dec ecx;
-
-  00046	49		 dec	 ecx
-
-; 120  : 		jne next;
-
-  00047	75 e2		 jne	 SHORT $next$3
-
-; 121  : 
-; 122  : 	}
-; 123  : 	return;
-; 124  : }
-
-  00049	5f		 pop	 edi
-  0004a	5e		 pop	 esi
-  0004b	5b		 pop	 ebx
-  0004c	81 c4 c0 00 00
-	00		 add	 esp, 192		; 000000c0H
-  00052	3b ec		 cmp	 ebp, esp
-  00054	e8 00 00 00 00	 call	 __RTC_CheckEsp
-  00059	8b e5		 mov	 esp, ebp
-  0005b	5d		 pop	 ebp
-  0005c	c3		 ret	 0
-?reverse_it@@YAXPADH0@Z ENDP				; reverse_it
 _TEXT	ENDS
 ; Function compile flags: /Odtp /RTCsu /ZI
 ; File v:\school files\cs3843\vsprojects\test_3_study\test_3_study\source.cpp
