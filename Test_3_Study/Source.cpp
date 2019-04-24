@@ -100,115 +100,54 @@ void move_it(char *s, char *d, int len){
 	return;
 }
 
-void reverse_it(char *gk, int len, char *ptr){
+
+void reverse_2_bytes(char *gK, int len){
+
 	__asm{
-		mov ecx, len;
-		shr ecx, 2;
-		mov esi, gk;
+		xor ecx, ecx;
 		xor ebx, ebx;
 		xor eax, eax;
-
-	next:
-		mov ax, [esi + ebx * 4];
+		mov ecx, len;
+		shr ecx, 1;
+		mov esi, gK;
+	Reverse_Loop:
+		mov ax, [esi + ebx * 2];
 		ror ax, 8;
-		mov dx, [esi + ebx * 4 + 2];
-		ror dx, 8;
-		mov [esi + ebx * 4], ax;
-		mov [esi + ebx * 4+2], dx;
+		mov[esi + ebx * 2], ax;
 		inc ebx;
 		dec ecx;
-		jne next;
-
+		jne Reverse_Loop;
 	}
 	return;
 }
 
-void reverse_it2(char* gk, int len){
+void reverse_4_bytes(char *gK, int len){
+
 	__asm{
 		xor ecx, ecx;
-		xor eax, eax;
 		xor ebx, ebx;
-		xor edx, edx;
+		xor eax, eax;
+		mov esi, gK;
 		mov ecx, len;
 		shr ecx, 2;
-		mov esi, gk;
-
 	Reverse_Loop:
+		//mov eax, [esi + ebx * 4];
+		//bswap eax;
+		//mov[esi + ebx * 4], eax;
 		mov ax, [esi + ebx * 4];
 		ror ax, 8;
 		mov dx, [esi + ebx * 4 + 2];
 		ror dx, 8;
-		mov[esi + ebx * 4], ax;
-		mov[esi + ebx * 4 + 2], dx;
+		mov[esi + ebx * 4], dx;
+		mov[esi + ebx * 4 + 2], ax;
 		inc ebx;
-		cmp ebx, ecx;
-		jb Reverse_Loop;
+		dec ecx;
+		jne Reverse_Loop;
 	}
+	return;
+
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void reverse_it3(char* s, int l){
-	__asm{
-		xor ecx, ecx;
-		xor ebx, ebx;
-		xor eax, eax;
-		mov edi, s;
-		mov ebx, l;
-		shr ebx, 1;
-
-	Reverse_It_Loop:
-		mov ax, [edi + ecx * 2];
-		ror ax, 8;
-		mov[edi + ecx * 2], ax;
-		inc ecx;
-		cmp ecx, ebx;
-		jb Reverse_It_Loop;
-
-
-	}
-
-}
 
 int find_it(char* str, char* find, int len){
 	int found = -1;
@@ -242,6 +181,7 @@ void copy_string(char* s, char* d, int l){
 		mov ecx, l;
 		rep movsb;
 	}
+	return;
 }
 
 void copy_string_2(char* s, char* d, int l){
@@ -256,6 +196,7 @@ void copy_string_2(char* s, char* d, int l){
 		cmp al, 0;
 		jne Loop_Through_String;
 	}
+	return;
 }
 
 int func(char* d){
@@ -271,6 +212,7 @@ int func(char* d){
 	EXIT:
 		mov eax, ecx;
 	}
+	return;
 }
 
 void multi(){
@@ -278,8 +220,8 @@ void multi(){
 		xor ecx, ecx;
 		mov cl, 0x08;
 		shl cl, 3;
-
 	}
+	return;
 }
 
 void interpret(){
@@ -296,14 +238,22 @@ void interpret(){
 		mov bx, word ptr [gk3 + ecx * 2];
 		mov ah, byte ptr [gk3 + ecx * 2];
 		mov al, byte ptr [gk3 + ecx * 2 + 1];
-
-
-
 	}
+	return;
 }
 
 
 int main(){
+	char dat[] = { 0x11, 0x33, 0x44, 0xAA, 0x00 };
+	char gk[] = { 0x74, 0x20, 0x43, 0x61, 0x20, 0x6D, 0x6F, 0x6E, 0x2E, 0x00, 0x61, 0x74 };
+	char gk2[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x74, 0x68, 0x65, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00 };
+	char gk3[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00 };
+	char test = 'A';
+	int f;
+	char s[] = "Hello World!";
+	char d[13];
+
+
 	//decrement();
 	//maskoutbits();
 	//throwbits045();
@@ -313,26 +263,18 @@ int main(){
 	//force_0_3_7_to_1();
 	//divide_by_16_signed();
 	//decrement2();
-	int f; 
-	char s[] = "Hello World!";
-	char d[13];
 	//move_it(s,d,12);
-	char gk[] = { 0x74, 0x20, 0x43, 0x61, 0x20, 0x6D, 0x6F, 0x6E, 0x2E, 0x00, 0x61, 0x74};
-	char gk2[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x74, 0x68, 0x65, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00};	
-	
-	char test = 'A';
 
 	//gptrK = &test;
-	//reverse_it(gk, 12, gptrK);
-	//reverse_it2(gk, 12);
-	//reverse_it3(gk2, 16);
+
+	//reverse_4_bytes(gk3, 12);
+	reverse_2_bytes(gk2, 16);
 	//f = find_it(s, "W", 12);
 
 	//copy_string(s,d,13);
 	//copy_string_2(s, d, 13);
 	//multi();
-	char dat[] = { 0x11, 0x33, 0x44, 0xAA, 0x00 };
 	//f = func(dat);
-	interpret();
+	//interpret();
 	return 0;
 }
