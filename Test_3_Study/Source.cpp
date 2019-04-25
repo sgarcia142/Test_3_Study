@@ -287,8 +287,23 @@ int find_Y(char* gK, char Y){
 	return;
 }
 
+void rotate_it_baby(char* dat, int rotate_count){
+	__asm{
+		xor ecx, ecx;		
+		xor eax, eax;
+		mov ecx, [ebp + 12];
+		mov esi, dat;
+		mov eax, [esi];
+		ror eax, cl;
+		and eax, 0x0000FFFF;
+	}
+
+	return;
+}
+
 
 int main(){
+	char bytes_4[] = { 0x11, 0x33, 0x44, 0x55 };
 	char dat[] = { 0x11, 0x33, 0x44, 0xAA, 0x43, 0x00 };
 	char gk[] = { 0x74, 0x20, 0x43, 0x61, 0x20, 0x6D, 0x6F, 0x6E, 0x2E, 0x00, 0x61, 0x74 };
 	char gk2[] = { 0x43, 0x61, 0x74, 0x20, 0x6F, 0x6E, 0x20, 0x74, 0x68, 0x65, 0x20, 0x6D, 0x61, 0x74, 0x2E, 0x00 };
@@ -313,7 +328,7 @@ int main(){
 	//gptrK = &test;
 
 	//reverse_4_bytes(gk3, 12);
-	reverse_2_bytes(gk2, 16);
+	//reverse_2_bytes(gk2, 16);
 	//f = find_it(s, "W", 12);
 
 	//copy_string(s,d,13);
@@ -323,5 +338,7 @@ int main(){
 	//f = find_00(dat);
 	//f = find_Y(dat, 'C');
 	//interpret();
+
+	rotate_it_baby(bytes_4, 4);
 	return 0;
 }
