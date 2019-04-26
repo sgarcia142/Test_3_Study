@@ -174,6 +174,18 @@ int find_it(char* str, char* find, int len){
 	return found;
 }
 
+
+void string_fun_1(char* s, char* d, int len){
+
+	__asm{
+		mov     esi, s; 
+		mov     edi, d; 
+		cld;
+		mov     ecx, len;
+		rep movsb;
+	}
+}
+
 void copy_string(char* s, char* d, int l){
 	__asm{
 		cld;
@@ -302,6 +314,16 @@ void rotate_it_baby(char* dat, int rotate_count){
 }
 
 
+void set_them(){
+	__asm{
+		xor eax, eax;
+		mov eax, 0xFFFFFBFF;
+		or eax, 0x00000400;
+		and eax, 0xFFFFFFBE;
+	}
+	return;
+}
+
 int main(){
 	char bytes_4[] = { 0x11, 0x33, 0x44, 0x55 };
 	char dat[] = { 0x11, 0x33, 0x44, 0xAA, 0x43, 0x00 };
@@ -311,7 +333,7 @@ int main(){
 	char test = 'A';
 	int f;
 	char s[] = "Hello World!";
-	char d[13];
+	char d[13]="";
 
 
 	//decrement();
@@ -339,6 +361,9 @@ int main(){
 	//f = find_Y(dat, 'C');
 	//interpret();
 
-	rotate_it_baby(bytes_4, 4);
+	//rotate_it_baby(bytes_4, 4);
+
+	//string_fun_1(s, d, 13);
+	//set_them();
 	return 0;
 }
